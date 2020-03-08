@@ -14,10 +14,19 @@ services:
     volumes:
       - ./code/django_rest_api:/code
     tty: true
-    ports:
-      - 8000:8000
+    expose:
+      - "3031"
     depends_on:
       - db
+  nginx:
+    restart: always
+    image: nginx
+    depends_on:
+      - rest_api
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx/:/etc/nginx/"
   web_front:
     container_name: django_web_front
     build:
@@ -29,7 +38,6 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - rest_api
-
+      - nginx
 volumes:
   django_data_volume:
